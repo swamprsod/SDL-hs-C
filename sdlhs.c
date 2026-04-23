@@ -18,6 +18,7 @@ int main()
 {
 
 signal(SIGINT, varsigint);
+signal(SIGTERM, varsigint);
 
 SDL_Init(SDL_INIT_VIDEO);
 TTF_Init();
@@ -39,7 +40,24 @@ printf("font (text) umer tak kak %s\n", TTF_GetError());
 SDL_Rect hsbtn1={790, 10, 100, 40};
 SDL_Rect hsbtn2={790, 60, 100, 40};
 
+SDL_Rect exhsbtn={10, 10, 20, 20};
+
 SDL_Color white={255,255,255,255};
+
+// exhsbtn
+SDL_Surface *srf3 = TTF_RenderUTF8_Blended(text, "X", white);
+SDL_Texture *texr3 = SDL_CreateTextureFromSurface(hshsren, srf3);
+
+SDL_Rect texr3_rect=
+{
+exhsbtn.x+(exhsbtn.w - srf3->w)/2,
+exhsbtn.y+(exhsbtn.h - srf3->h)/2,
+srf3->w,
+srf3->h,
+};
+SDL_FreeSurface(srf3);
+
+
 
 // hsbtn1
 SDL_Surface *srf1 = TTF_RenderUTF8_Blended(text, "cpu model", white);
@@ -56,12 +74,12 @@ SDL_FreeSurface(srf1);
 
 //hsbtn2
 SDL_Surface *srf2 = TTF_RenderUTF8_Blended(text, "ram", white);
-SDL_Texture *texr2 = SDL_CreateTextureFromSurface(hshsren, srf1);
+SDL_Texture *texr2 = SDL_CreateTextureFromSurface(hshsren, srf2);
 
 SDL_Rect texr2_rect=
 {
-hsbtn2.x+(hsbtn2.w - srf1->w)/2,
-hsbtn2.y+(hsbtn2.h - srf1->h)/2,
+hsbtn2.x+(hsbtn2.w - srf2->w)/2,
+hsbtn2.y+(hsbtn2.h - srf2->h)/2,
 srf2->w,
 srf2->h,
 };
@@ -72,20 +90,44 @@ SDL_FreeSurface(srf2);
 SDL_Event evnt;
 
 while (hstrue)
+
 {
 // obrabotka klikov
 while (SDL_PollEvent(&evnt))
 {
+
+// exit
+if (evnt.type==SDL_QUIT)
+{
+hstrue=0;
+}
+// eof
+
 if (evnt.type==SDL_MOUSEBUTTONDOWN && evnt.button.button==SDL_BUTTON_LEFT)
 {
+
 int x=evnt.button.x;
 int y=evnt.button.y;
 
-if (x > hsbtn1.x && x < hsbtn1.x + hsbtn1.w && y > hsbtn1.y && y < hsbtn1.y + hsbtn1.h)
+// knopka vihoda
+if (x>exhsbtn.x && x<exhsbtn.x+exhsbtn.w && y>exhsbtn.y && y<exhsbtn.y+exhsbtn.h)
 {
-system("cat /proc/cpuinfo | grep \"model name\" | head -n 1 | cut -d':' -f2 | sed 's/model name\\s*//'");
+hstrue=0;
+printf("%d, here i am!\n", hstrue);
 }
-if (x > hsbtn2.x && x < hsbtn2.x + hsbtn2.w && y > hsbtn2.y && y < hsbtn2.y + hsbtn2.h)
+
+// exit
+if (evnt.type==SDL_QUIT)
+{
+hstrue=0;
+}
+
+if (x>hsbtn1.x && x<hsbtn1.x+hsbtn1.w && y>hsbtn1.y && y<hsbtn1.y+hsbtn1.h)
+{
+printf("hsbtn1 click\n");
+system("cat /proc/cpuinfo | grep \"model name\" | head -n 1 | cut -d':' -f2 | sed 's/model name\\s*//' >> ./data.txt");
+}
+if (x>hsbtn2.x && x<hsbtn2.x+hsbtn2.w && y>hsbtn2.y && y<hsbtn2.y+hsbtn2.h)
 {
 printf("2 2 2text from hsbtn2 test!!\n");
 }
@@ -98,12 +140,15 @@ SDL_RenderClear(hshsren);
 SDL_SetRenderDrawColor(hshsren, 100, 100, 100, 255);
 SDL_RenderFillRect(hshsren, &hsbtn1);
 SDL_RenderFillRect(hshsren, &hsbtn2);
+SDL_RenderFillRect(hshsren, &exhsbtn);
 
 SDL_SetRenderDrawColor(hshsren, 0,0,0,255);
 SDL_RenderDrawRect(hshsren, &hsbtn1);
 SDL_RenderDrawRect(hshsren, &hsbtn2);
+SDL_RenderDrawRect(hshsren, &exhsbtn);
 SDL_RenderCopy(hshsren, texr1, NULL, &texr1_rect);
 SDL_RenderCopy(hshsren, texr2, NULL, &texr2_rect);
+SDL_RenderCopy(hshsren, texr3, NULL, &texr3_rect);
 
 
 SDL_RenderPresent(hshsren);
