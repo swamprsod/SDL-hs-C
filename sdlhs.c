@@ -1,3 +1,6 @@
+// written by amoeba rsod in C unstyle
+// DEPRECATED!!!! GOTO am_sdlhs.c
+
 #include <stdio.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
