@@ -1,5 +1,5 @@
 // written in C lang allmanBSD by amoeba rsod
-// clang-format -style="{BasedOnStyle: llvm, BreakBeforeBraces: Allman, IndentWidth: 4}" sdlhs.c > am_sdlhc.c
+// clang-format -style="{BasedOnStyle: llvm, BreakBeforeBraces: Allman, IndentWidth: 4}" sdlhs.c > am_sdlhs.c
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
