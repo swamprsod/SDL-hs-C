@@ -14,6 +14,9 @@ void varsigint()
 hstrue=0;
 }
 
+int ptime1=0;
+int ptime2=0;
+
 int main() 
 {
 
@@ -22,36 +25,36 @@ signal(SIGTERM, varsigint);
 
 SDL_Init(SDL_INIT_VIDEO);
 TTF_Init();
-SDL_Window *hshs = SDL_CreateWindow("hshs", 100, 100, 900, 700, 0);
+SDL_Window *hshs= SDL_CreateWindow("hshs", 100, 100, 900, 700, 0);
 SDL_Renderer *hshsren=SDL_CreateRenderer(hshs, -1, SDL_RENDERER_ACCELERATED);
 
-SDL_RWops *rw = SDL_RWFromConstMem(ter_u12n_otb, ter_u12n_otb_len);
+SDL_RWops *rw= SDL_RWFromConstMem(ter_u12n_otb, ter_u12n_otb_len);
 if (!rw)
 {
 printf("rw umer\n");
 }
-TTF_Font *text = TTF_OpenFontRW(rw, 1, 12);
+TTF_Font *text= TTF_OpenFontRW(rw, 1, 12);
 if (!text)
 {
 printf("font (text) umer tak kak %s\n", TTF_GetError());
 }
 
 // x y w h
-SDL_Rect hsbtn1={790, 10, 100, 40};
-SDL_Rect hsbtn2={790, 60, 100, 40};
+SDL_Rect hsbtn1={790, 10, 100,40};
+SDL_Rect hsbtn2={790, 60,100, 40};
 
-SDL_Rect exhsbtn={10, 10, 20, 20};
+SDL_Rect exhsbtn={10,10, 20, 20};
 
 SDL_Color white={255,255,255,255};
 
 // exhsbtn
-SDL_Surface *srf3 = TTF_RenderUTF8_Blended(text, "X", white);
-SDL_Texture *texr3 = SDL_CreateTextureFromSurface(hshsren, srf3);
+SDL_Surface *srf3= TTF_RenderUTF8_Blended(text, "X", white);
+SDL_Texture *texr3= SDL_CreateTextureFromSurface(hshsren, srf3);
 
 SDL_Rect texr3_rect=
 {
-exhsbtn.x+(exhsbtn.w - srf3->w)/2,
-exhsbtn.y+(exhsbtn.h - srf3->h)/2,
+exhsbtn.x+(exhsbtn.w-srf3->w)/2,
+exhsbtn.y+(exhsbtn.h-srf3->h)/2,
 srf3->w,
 srf3->h,
 };
@@ -88,7 +91,6 @@ SDL_FreeSurface(srf2);
 
 
 SDL_Event evnt;
-
 while (hstrue)
 
 {
@@ -124,31 +126,56 @@ hstrue=0;
 
 if (x>hsbtn1.x && x<hsbtn1.x+hsbtn1.w && y>hsbtn1.y && y<hsbtn1.y+hsbtn1.h)
 {
+ptime1=10;
 printf("hsbtn1 click\n");
 system("cat /proc/cpuinfo | grep \"model name\" | head -n 1 | cut -d':' -f2 | sed 's/model name\\s*//' >> ./data.txt");
 }
 if (x>hsbtn2.x && x<hsbtn2.x+hsbtn2.w && y>hsbtn2.y && y<hsbtn2.y+hsbtn2.h)
 {
+ptime2=10;
 printf("2 2 2text from hsbtn2 test!!\n");
 }
 }
-}
 
+} // while sdl poll
 SDL_SetRenderDrawColor(hshsren, 172, 172, 172, 255);
 SDL_RenderClear(hshsren);
 
-SDL_SetRenderDrawColor(hshsren, 100, 100, 100, 255);
-SDL_RenderFillRect(hshsren, &hsbtn1);
-SDL_RenderFillRect(hshsren, &hsbtn2);
-SDL_RenderFillRect(hshsren, &exhsbtn);
+// hsbtn1
+if (ptime1>0)
+{
+SDL_SetRenderDrawColor(hshsren,50,50,50,255);
+ptime1--;
+}
+else
+{
+SDL_SetRenderDrawColor(hshsren,100,100,100,255);
+}
+SDL_RenderFillRect(hshsren,&hsbtn1);
+SDL_RenderCopy(hshsren,texr1,NULL,&texr1_rect);
+
+// hsbtn2
+if (ptime2>0)
+{
+SDL_SetRenderDrawColor(hshsren, 50, 50, 50, 255);
+ptime2--;
+}
+else
+{
+SDL_SetRenderDrawColor(hshsren, 100,100,100,255);
+}
+SDL_RenderFillRect(hshsren,&hsbtn2);
+SDL_RenderCopy(hshsren, texr2, NULL, &texr2_rect);
+
+// hsbtn3
+SDL_SetRenderDrawColor(hshsren,100,100,100,255);
+SDL_RenderFillRect(hshsren,&exhsbtn);
+SDL_RenderCopy(hshsren,texr3,NULL,&texr3_rect);
 
 SDL_SetRenderDrawColor(hshsren, 0,0,0,255);
 SDL_RenderDrawRect(hshsren, &hsbtn1);
 SDL_RenderDrawRect(hshsren, &hsbtn2);
 SDL_RenderDrawRect(hshsren, &exhsbtn);
-SDL_RenderCopy(hshsren, texr1, NULL, &texr1_rect);
-SDL_RenderCopy(hshsren, texr2, NULL, &texr2_rect);
-SDL_RenderCopy(hshsren, texr3, NULL, &texr3_rect);
 
 
 SDL_RenderPresent(hshsren);
